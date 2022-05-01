@@ -1,18 +1,34 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# Other files and folders
-.settings/
+# Distribution / packaging
+*.egg-info/
+build
+dist
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Unit test / coverage reports
+.coverage
+coverage.xml
+junit/*
+htmlcov/*
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Caches
+.pytest_cache/
+
+# VSCode
+.vscode/
+
+# Idea
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Databricks eXtensions
+.dbx/lock.json
+
+# local mlflow files
+mlruns/
