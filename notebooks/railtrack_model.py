@@ -142,3 +142,121 @@ with mlflow.start_run(run_name="Railway-attrition-classifier") as run:
 
     # End run
     mlflow.end_run()
+# COMMAND ----------
+
+
+# Load model from best run and save model 
+best_run = mlflow.search_runs(filter_string=f"tags.mlflow.parentRunId = '{run.info.run_id}'", order_by=[
+                              "metrics.testing_auc DESC"]).iloc[0]
+classifier = mlflow.pyfunc.load_model(f"runs:/{best_run.run_id}/model")
+#
+# Download model artifact
+client = MlflowClient()
+local_dir = "/tmp/models/classifier"
+os.makedirs(local_dir, exist_ok=True)
+client.download_artifacts(best_run.run_id, "model", local_dir)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC #### Build data drift model
+# MAGIC 
+# MAGIC A statistical model will be built to determine data drift in features.
+
+# COMMAND ----------
+
+
+# Develop drift model using Kolmogorov-Smirnov (K-S) tests for the continuous numerical features and Chi-Squared tests for the categorical features
+def make_drift_model(X, categories_per_feature, **params):
+    return TabularDrift(X, categories_per_feature=categories_per_feature, **params)
+
+# Preprocess output of drift model
+def process_drift_output(output, column_names):
+    return {
+        "threshold": output["data"]["threshold"],
+        "is_drift": dict(zip(column_names, output["data"]["is_drift"].tolist())),
+        "p_value": dict(zip(column_names, output["data"]["p_val"].tolist())),
+        "magnitude": dict(zip(column_names, (1 - output["data"]["p_val"]).tolist()))
+    }
+
+
+with mlflow.start_run(run_name="Railway-attrition-drift") as run:
+    # Develop drift model
+    drift_column_names = columns_categorical + columns_numeric
+    categories_per_feature = {0: None, 1: None, 2: None,
+                              3: None, 4: None, 5: None, 6: None, 7: None}
+    drift_model = make_drift_model(
+        X_train[drift_column_names].values, categories_per_feature)
+
+    # Log model to mlflow run
+    drift_model_path = "/tmp/models/drift"
+    save_detector(drift_model, drift_model_path)
+    mlflow.log_artifact(drift_model_path)
+
+    # Generate drift predictions
+    drift_model = load_detector(drift_model_path)
+    drift_output = drift_model.predict(
+        X_test[drift_column_names].values, drift_type="feature", return_p_val=True, return_distance=True)
+
+    # Display drift output
+    pprint(process_drift_output(drift_output,
+           drift_column_names), width=120, compact=True)
+
+    # End run
+    mlflow.end_run()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC #### Build outlier model
+# MAGIC 
+# MAGIC A statistical model will be built to determine outliers in numeric features.
+
+# COMMAND ----------
+
+
+# Develop outlier model using isolation forests
+def make_outlier_model(X, **params):
+    outlier_model = IForest(**params)
+    outlier_model.fit(X)
+    return outlier_model
+
+# Preprocess output of outlier model
+def process_outlier_output(output, column_names):
+    return {
+        "is_outlier": dict(zip(column_names, output["data"]["is_outlier"].tolist())),
+    }
+
+
+with mlflow.start_run(run_name="Railway-attrition-outlier") as run:
+    # Develop outlier model
+    outlier_model = make_outlier_model(
+        X_train[columns_numeric].values, threshold=5)
+
+    # Log model to mlflow run
+    outlier_model_path = "/tmp/models/outlier"
+    save_detector(outlier_model, outlier_model_path)
+    mlflow.log_artifact(outlier_model_path)
+
+    # Generate outlier predictions
+    outlier_model = load_detector(outlier_model_path)
+    outlier_output = outlier_model.predict(X_test[columns_numeric].values)
+
+    # Display outlier output
+    pprint(process_outlier_output(outlier_output,
+           columns_numeric), width=120, compact=True)
+
+    # End run
+    mlflow.end_run()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC #### Register MLFlow Model Artifact
+# MAGIC 
+# MAGIC Develop a `python_function` model object which references the classifer, drift model, and outlier model. This model artifact will be deployed as a web service.
+
+# COMMAND ----------
