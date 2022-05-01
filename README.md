@@ -29,4 +29,9 @@ https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
     d. monitored within Microsoft Azure
 2. Develop and register a ML model to predict likelihood of railway track degradation.
 
+#Deploy Azure Resources
+#To deploy the resources use the link below
+
+https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FHarish-Nedunuri%2Fazure-databricks-mlops%2Fmain%2Fazure_infrastructure%2Fmain.json
+
 

@@ -260,3 +260,108 @@ with mlflow.start_run(run_name="Railway-attrition-outlier") as run:
 # MAGIC Develop a `python_function` model object which references the classifer, drift model, and outlier model. This model artifact will be deployed as a web service.
 
 # COMMAND ----------
+
+class RailwayAttritionModel(mlflow.pyfunc.PythonModel):
+    """
+    Class containing attrition use-case models - attrition classifer, drift model, and outlier model.
+    """
+
+    def __init__(self, columns_categorical: list, columns_numeric: list):
+        self.columns_categorical = columns_categorical
+        self.columns_numeric = columns_numeric
+
+    def load_context(self, context):
+        self.classifier = joblib.load(os.path.join(
+            context.artifacts["artifacts_path"], "classifier/model/model.pkl"))
+        self.drift_model = load_detector(os.path.join(
+            context.artifacts["artifacts_path"], "drift"))
+        self.outier_model = load_detector(os.path.join(
+            context.artifacts["artifacts_path"], "outlier"))
+
+    def generate_output(self, model_predictions: np.array, drift_output: dict, outlier_output: dict):
+        return {
+            "classifier__predictions": model_predictions.tolist(),
+            "drift__threshold": drift_output["data"]["threshold"],
+            "drift__is_drift": dict(zip(columns_categorical + columns_numeric, drift_output["data"]["is_drift"].tolist())),
+            "drift__p_value": dict(zip(columns_categorical + columns_numeric, drift_output["data"]["p_val"].tolist())),
+            "drift__magnitude": dict(zip(columns_categorical + columns_numeric, (1 - drift_output["data"]["p_val"]).tolist())),
+            "outliers__is_outlier": dict(zip(columns_numeric, outlier_output["data"]["is_outlier"].tolist())),
+        }
+
+    def predict(self, context, model_input):
+        # Generate predictions, drift results, and  outlier results
+        predictions = self.classifier.predict_proba(model_input)[:, 1]
+        drift_output = self.drift_model.predict(
+            model_input[drift_column_names].values, drift_type="feature", return_p_val=True, return_distance=True)
+        outlier_output = self.outier_model.predict(
+            model_input[columns_numeric].values)
+
+        return self.generate_output(predictions, drift_output, outlier_output)
+
+# COMMAND ----------
+
+
+with mlflow.start_run(run_name="Railway-attrition-model-artifact") as run:
+    # Define conda environment
+    mlflow_conda_env = {
+        'name': "Railway-attrition-env",
+        'channels': ["defaults"],
+        'dependencies': [
+            "python=3.8.10",
+            {
+                "pip": [
+                    "alibi-detect==0.8.1",
+                    "mlflow-skinny==1.21.0",
+                    "scikit-learn",
+                    "numpy==1.19.2",
+                    "pandas==1.2.4",
+                    "scikit-learn==0.24.1"
+                ]
+            }
+        ]
+    }
+
+    # Create instance of model
+    model_artifact = RailwayAttritionModel(
+        columns_categorical=columns_categorical,
+        columns_numeric=columns_numeric
+    )
+
+    # Create model signature
+    y_pred_proba = joblib.load(
+        "/tmp/models/classifier/model/model.pkl").predict_proba(X_test)
+    signature = infer_signature(X_train)
+    
+    # Log model
+    mlflow.pyfunc.log_model(
+        artifact_path="Railway-attrition-model",
+        python_model=model_artifact,
+        artifacts={"artifacts_path": "/tmp/models"},
+        conda_env=mlflow_conda_env,
+        signature=signature
+    )
+
+    # End run
+    mlflow.end_run()
+
+# COMMAND ----------
+
+# Register drift model to MLFlow model registry
+registered_attrition_model = mlflow.register_model(
+    f"runs:/{run.info.run_id}/Railway-attrition-model",
+    "Railway_attrition"
+)
+
+# COMMAND ----------
+
+# Load model from MLFlow model registry
+loaded_attrition_model = mlflow.pyfunc.load_model(
+    f"models:/{registered_attrition_model.name}/{registered_attrition_model.version}")
+
+# Display output
+model_output = loaded_attrition_model.predict(X_test.head(5))
+pprint(model_output, width=120, compact=True)
+
+# COMMAND ----------
+
+
