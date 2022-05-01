@@ -63,3 +63,82 @@ X_train, X_test, y_train, y_test = train_test_split(
     df_railtrack[columns_categorical + columns_numeric], df_railtrack[columns_target], test_size=0.20, random_state=2022)
 
 
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC 
+# MAGIC #### Build classifier
+# MAGIC 
+# MAGIC A machine learning model will be built to predict the liklihood of Railway attrition.
+
+# COMMAND ----------
+#
+
+# Define classifer pipeline
+def make_classifer_pipeline(params):
+    categorical_transformer = Pipeline(steps=[
+        ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
+        ("ohe", OneHotEncoder())]
+    )
+
+    numeric_transformer = Pipeline(steps=[
+        ("imputer", SimpleImputer(strategy="median"))]
+    )
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("numeric", numeric_transformer, columns_numeric),
+            ("categorical", categorical_transformer, columns_categorical)
+        ]
+    )
+
+    classifer_pipeline = Pipeline([
+        ("preprocessor", preprocessor),
+        ("classifier", RandomForestClassifier(**params, n_jobs=-1))
+    ])
+
+    return classifer_pipeline
+
+# COMMAND ----------
+
+
+# Define objective function
+def hyperparameter_tuning(params):
+    mlflow.sklearn.autolog(silent=True)
+
+    with mlflow.start_run(nested=True):
+        # Train and model
+        estimator = make_classifer_pipeline(params)
+        estimator = estimator.fit(X_train, y_train.values.ravel())
+        y_predict_proba = estimator.predict_proba(X_test)
+        auc_score = roc_auc_score(y_test, y_predict_proba[:, 1])
+
+        # Log artifacts
+        signature = infer_signature(X_train, y_predict_proba[:, 1])
+        mlflow.sklearn.log_model(estimator, "model", signature=signature)
+        mlflow.log_metric("testing_auc", auc_score)
+
+        return {"loss": -auc_score, "status": STATUS_OK}
+
+# COMMAND ----------
+
+
+# Define search space
+search_space = {
+    "n_estimators": hp.choice("n_estimators", range(100, 1000)),
+    "max_depth": hp.choice("max_depth", range(1, 20)),
+    "criterion": hp.choice("criterion", ["gini", "entropy"]),
+}
+
+# Start model training run
+with mlflow.start_run(run_name="Railway-attrition-classifier") as run:
+    # Hyperparameter tuning
+    best_params = fmin(
+        fn=hyperparameter_tuning,
+        space=search_space,
+        algo=tpe.suggest,
+        max_evals=10,
+    )
+
+    # End run
+    mlflow.end_run()
