@@ -35,3 +35,7 @@ https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FHarish-Nedunuri%2Fazure-databricks-mlops%2Fmain%2Fazure_infrastructure%2Fmain.json
 ![deployment failed](https://user-images.githubusercontent.com/97321212/166141017-2024d8fc-df05-4726-910b-ecbd2dd74352.JPG)
 
+## Save GitHub Secrets
+
+
+
