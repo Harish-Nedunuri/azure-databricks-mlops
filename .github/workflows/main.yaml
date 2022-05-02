@@ -60,7 +60,23 @@ jobs:
           username: ${{ secrets.CONTAINER_REGISTRY_NAME }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
-      
+      - name: Build and push image
+        run: |
+          docker build -t ${{ env.PROJECT_NAME }} service
+          docker tag ${{ env.PROJECT_NAME }} ${{ secrets.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ env.PROJECT_NAME }}:${{ github.sha }}
+          docker push ${{ secrets.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ env.PROJECT_NAME }}:${{ github.sha }}
+
+      - name: Update Kubernetes manifest file
+        run: |
+          export IMAGE_NAME=${{ secrets.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ env.PROJECT_NAME }}
+          export IMAGE_TAG=${{ github.sha }}
+          envsubst < manifests/api.yaml > artifacts/manifest.yaml
+
+      - name: Upload model package artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: artifacts
 
   staging:
     name: Staging
