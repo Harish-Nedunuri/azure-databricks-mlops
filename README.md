@@ -1,5 +1,5 @@
 # MLOps
-The Machine Learning (ML) lifecycle consists of many complex components from data ingest to model deployment, and monitoring. MLOps includes the experimentation, iteration, and continuous improvement of the ML lifecycle.
+The Machine Learning (ML) lifecycle consists of many complex components from data ingestion to model deployment, and monitoring. MLOps includes the experimentation, iteration, and continuous improvement of the ML lifecycle.
 https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 # Project Overview:
  ![image](https://user-images.githubusercontent.com/97321212/166205744-b187d66a-808e-41de-8733-e5737dff7a01.png)
@@ -56,6 +56,7 @@ Runtime = 10.1 ML (includes Apache Spark 3.2.0, Scala 2.12)
 
 
 ## 3. Run all cells and open MLFLOW model registry
+Filename: notebooks/railway_ml_model.py
 ![model](https://user-images.githubusercontent.com/97321212/166208490-d9d375f1-742c-438a-a98a-4184331b9086.JPG)
 
 # Model Deployment
