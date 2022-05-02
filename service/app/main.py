@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from mlflow.pyfunc import load_model
 
-from Railway_attrition_record import RailwayAttritionRecord
+from app.core.models.Railway_attrition_record import RailwayAttritionRecord
 
 # Define global variables
 SERVICE_NAME = "Railway Attrition API"
