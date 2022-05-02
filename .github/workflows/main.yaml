@@ -3,7 +3,7 @@ name: Build-Deploy
 on: workflow_dispatch
 
 env:
-  PROJECT_NAME: ailway-attrition
+  PROJECT_NAME: Railway-attrition
 
 jobs:
   build:
