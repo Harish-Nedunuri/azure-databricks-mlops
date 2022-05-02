@@ -37,22 +37,30 @@ https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.github
 ![deployment failed](https://user-images.githubusercontent.com/97321212/166141017-2024d8fc-df05-4726-910b-ecbd2dd74352.JPG)
 ![resources](https://user-images.githubusercontent.com/97321212/166206354-bbcaf7cc-6b95-48f1-a1d5-63591455ec4a.JPG)
 
+## Save GitHub Secrets
+![env git](https://user-images.githubusercontent.com/97321212/166206291-6fd017a6-3e26-424c-a044-6ed88412ec48.JPG)
+![rep secret git](https://user-images.githubusercontent.com/97321212/166206327-26e4f50e-56e1-455e-bf40-4cc8a6010a45.JPG)
+
+
 # Build and Run Data Bricks Model
 
-1. Create and Run a cluster on Azure Data bricks
+## 1. Create and Run a cluster on Azure Data bricks
 
 Runtime = 10.1 ML (includes Apache Spark 3.2.0, Scala 2.12)
 ![image](https://user-images.githubusercontent.com/97321212/166207220-44541414-2f19-42b3-b716-4c94e4fb632d.png)
 
 
-2. Confirure Repo
+## 2. Configure Databricks Repo
+![azure_db_repo](https://user-images.githubusercontent.com/97321212/166221473-40855dc1-3ec8-47e0-b3c4-862c541a0450.JPG)
 
-3. Run all cells and open MLFLOW model registry
+
+
+## 3. Run all cells and open MLFLOW model registry
 ![model](https://user-images.githubusercontent.com/97321212/166208490-d9d375f1-742c-438a-a98a-4184331b9086.JPG)
 
 # Model Deployment
 
-The following files are used for packaging and deploying the model API service:
+The following files are created for packaging and deploying the model API service:
 
 1. .github/workflows/main.yaml: the continuous integration and continuous delivery pipeline.
 
@@ -66,9 +74,29 @@ The following files are used for packaging and deploying the model API service:
 
 6. service/requirements.txt: a file specifying the Python dependencies of the API service.
 
-## Save GitHub Secrets
-![env git](https://user-images.githubusercontent.com/97321212/166206291-6fd017a6-3e26-424c-a044-6ed88412ec48.JPG)
-![rep secret git](https://user-images.githubusercontent.com/97321212/166206327-26e4f50e-56e1-455e-bf40-4cc8a6010a45.JPG)
+
+The workflow to be deployed comprises of three jobs:
+
+## A. Build: 
+this job will create a Docker container and register it in ACR. This Docker container will be the API that end-users will consume.
+
+## B. Staging: 
+this job will deploy the Docker container to the AKS cluster specified in the GitHub environment called Staging. Once deployed, the model's state will transition to the Staging state in the MLFLow model registry.
+## C. Production: 
+this job will deploy the Docker container to the AKS cluster specified in the GitHub environment called Production. Once deployed, the model's state will transition to the Production state in the MLFLow model registry.
+## WORK IN PROGRESS
+
+# Model monitoring
+
+For model monitoring Azure Container insights willbe enabled as part of AKS. This will monitor the performance of container workloads deployed to the Kubernetes cluster.
+
+## WORK IN PROGRESS
+
+## View model service metrics and logs
+
+
+
+
 
 
 
