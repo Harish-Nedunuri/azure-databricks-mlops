@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class EmployeeAttritionRecord(BaseModel):
+class RailwayAttritionRecord(BaseModel):
     Track_age_yrs: float = 22.0
     Track_degradation: str = "TRUE"
     Load_cycles_daily: float = 177.0
