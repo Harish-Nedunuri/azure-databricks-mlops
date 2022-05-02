@@ -2,7 +2,8 @@
 The Machine Learning (ML) lifecycle consists of many complex components from data ingest to model deployment, and monitoring. MLOps includes the experimentation, iteration, and continuous improvement of the ML lifecycle.
 https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 # Project Overview:
- ![image](https://user-images.githubusercontent.com/97321212/166095207-d89e2b18-e9d9-450c-80fd-652b03d95d69.png)
+ ![image](https://user-images.githubusercontent.com/97321212/166205744-b187d66a-808e-41de-8733-e5737dff7a01.png)
+
 ## Tech stack used 
 1. Azure databricks- For Model development  and management
 2. MLFlow- ML experiment tracking, registration, & deployment
@@ -34,8 +35,43 @@ https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 
 https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FHarish-Nedunuri%2Fazure-databricks-mlops%2Fmain%2Fazure_infrastructure%2Fmain.json
 ![deployment failed](https://user-images.githubusercontent.com/97321212/166141017-2024d8fc-df05-4726-910b-ecbd2dd74352.JPG)
+![resources](https://user-images.githubusercontent.com/97321212/166206354-bbcaf7cc-6b95-48f1-a1d5-63591455ec4a.JPG)
+
+# Build and Run Data Bricks Model
+
+1. Create and Run a cluster on Azure Data bricks
+
+Runtime = 10.1 ML (includes Apache Spark 3.2.0, Scala 2.12)
+![image](https://user-images.githubusercontent.com/97321212/166207220-44541414-2f19-42b3-b716-4c94e4fb632d.png)
+
+
+2. Confirure Repo
+
+3. Run all cells and open MLFLOW model registry
+![model](https://user-images.githubusercontent.com/97321212/166208490-d9d375f1-742c-438a-a98a-4184331b9086.JPG)
+
+# Model Deployment
+
+The following files are used for packaging and deploying the model API service:
+
+1. .github/workflows/main.yaml: the continuous integration and continuous delivery pipeline.
+
+2. manifests/api.yaml: the Kubernetes manifest specifying the desired state of the Kubernetes cluster.
+
+3. service/app: a directory containing a FastAPI web service that consumes the MLFlow model.
+
+4. service/configuration.json: a file specifying the model versions to be used as part of the API service.
+
+5. service/Dockerfile: a Dockerfile used to containerize the service.
+
+6. service/requirements.txt: a file specifying the Python dependencies of the API service.
 
 ## Save GitHub Secrets
+![env git](https://user-images.githubusercontent.com/97321212/166206291-6fd017a6-3e26-424c-a044-6ed88412ec48.JPG)
+![rep secret git](https://user-images.githubusercontent.com/97321212/166206327-26e4f50e-56e1-455e-bf40-4cc8a6010a45.JPG)
+
+
+
 
 
 
