@@ -1,0 +1,14 @@
+channels:
+- conda-forge
+dependencies:
+- python=3.8.12
+- pip<=21.2.2
+- pip:
+  - mlflow
+  - asyncio==3.4.3
+  - cloudpickle==2.0.0
+  - psutil==5.8.0
+  - scikit-learn==0.24.2
+  - typing-extensions==3.10.0.2
+  - typing==3.7.4.3
+name: mlflow-env

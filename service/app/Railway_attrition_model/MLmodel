@@ -1,0 +1,30 @@
+artifact_path: model
+flavors:
+  python_function:
+    env: conda.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    python_version: 3.8.12
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 0.24.2
+mlflow_version: 1.25.1
+model_uuid: a24edd77a4874c98a3236344a056734e
+run_id: 147a8e33da5742e8b2b899b27f033059
+signature:
+  inputs: '[{"name": "tilting_wagon", "type": "string"}, {"name": "track_fouling",
+    "type": "string"}, {"name": "track_misalignment", "type": "string"}, {"name":
+    "rail_material_inhomogenous", "type": "string"}, {"name": "Track_age_yrs", "type":
+    "double"}, {"name": "Load_cycles_daily", "type": "double"}, {"name": "Load_amplitude_avg_N",
+    "type": "double"}, {"name": "Balast_thickness_inmm", "type": "double"}, {"name":
+    "track_confining_pressure_kPa", "type": "double"}, {"name": "curve_radius_mm",
+    "type": "double"}, {"name": "fracture_strength_level", "type": "double"}, {"name":
+    "fracture_strength_value", "type": "double"}, {"name": "humidty_percent", "type":
+    "double"}, {"name": "corrosion_index_iso", "type": "double"}, {"name": "speed_mph",
+    "type": "double"}, {"name": "Accumulated_tonnage_kgpmeter", "type": "double"},
+    {"name": "rail_fall_in_mm", "type": "double"}, {"name": "track_quality_index",
+    "type": "double"}, {"name": "inspection_interval_yrs", "type": "double"}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+utc_time_created: '2022-05-02 22:02:03.380413'

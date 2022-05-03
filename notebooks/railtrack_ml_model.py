@@ -310,7 +310,7 @@ class RailwayAttritionModel(mlflow.pyfunc.PythonModel):
         return self.generate_output(predictions, drift_output, outlier_output)
 
 # COMMAND ----------
-
+#%%
 
 with mlflow.start_run(run_name="Railway-attrition-model-artifact") as run:
     # Define conda environment
