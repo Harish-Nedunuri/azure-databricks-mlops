@@ -70,6 +70,8 @@ The following files are created for packaging and deploying the model API servic
 3. service/app: a directory containing a FastAPI web service that consumes the MLFlow model.
 
 4. service/configuration.json: a file specifying the model versions to be used as part of the API service.
+5.![image](https://user-images.githubusercontent.com/97321212/166565332-79dc1659-c060-47a3-8243-5084e584f310.png)
+
 
 5. service/Dockerfile: a Dockerfile used to containerize the service.
 
