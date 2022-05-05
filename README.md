@@ -2,7 +2,8 @@
 The Machine Learning (ML) lifecycle consists of many complex components from data ingestion to model deployment, and monitoring. MLOps includes the experimentation, iteration, and continuous improvement of the ML lifecycle.
 https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 # Project Overview:
- ![image](![image](https://user-images.githubusercontent.com/97321212/166576787-364f6a1d-351a-4a9d-b32b-4a11517f3384.png)
+ ![image](https://user-images.githubusercontent.com/97321212/166896152-011b1e32-12b1-47c7-99e8-848dd4bdd37d.png)
+
 
 ## Tech stack used 
 1. Azure databricks- For Model development  and management
