@@ -88,13 +88,13 @@ this job will create a Docker container and register it in ACR. This Docker cont
 this job will deploy the Docker container to the AKS cluster specified in the GitHub environment called Staging. Once deployed, the model's state will transition to the Staging state in the MLFLow model registry.
 ## C. Production: 
 this job will deploy the Docker container to the AKS cluster specified in the GitHub environment called Production. Once deployed, the model's state will transition to the Production state in the MLFLow model registry.
-## WORK IN PROGRESS
+## TODO
 
 # Model monitoring
 
 For model monitoring Azure Container insights willbe enabled as part of AKS. This will monitor the performance of container workloads deployed to the Kubernetes cluster.
 
-## WORK IN PROGRESS
+## Model Service
 
 ## View model service metrics and logs
 
