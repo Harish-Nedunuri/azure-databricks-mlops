@@ -3,6 +3,7 @@ The Machine Learning (ML) lifecycle consists of many complex components from dat
 https://databricks.com/wp-content/uploads/2021/12/MLOps-Cycle.png
 # Project Overview:
  ![image](https://user-images.githubusercontent.com/97321212/166896152-011b1e32-12b1-47c7-99e8-848dd4bdd37d.png)
+![training_pipeline (1)](https://user-images.githubusercontent.com/97321212/225932800-7152ecb7-6f51-4fbe-8d06-cb6468d9de18.png)
 
 
 ## Tech stack used 
